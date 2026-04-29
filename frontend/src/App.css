@@ -1,0 +1,140 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.background {
+	width: 100vw;
+	height: 100vh;
+	background-image: url("../public/bg.jpg");
+	background-position: center;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.home {
+	width: 60%;
+	height: 65%;
+	background-color: rgba(256, 256, 256, 0.9);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 50px;
+	border-radius: 10px;
+}
+
+.home-title {
+	font-size: 40px;
+}
+
+.home-card-container {
+	display: flex;
+	gap: 100px;
+}
+
+.home-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	min-width: 200px;
+	max-width: 300px;
+	background-color: none;
+	gap: 10px;
+	border: 2px solid #000;
+	border-radius: 8px;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.home-card:hover {
+	transform: scale(1.05);
+	background-color: #484eff;
+	color: #fff;
+}
+
+.wrapper {
+	display: flex;
+	justify-content: center;
+}
+.container {
+	max-width: 1000px;
+	min-width: 700px;
+	padding: 100px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: start;
+	gap: 30px;
+}
+
+.page-head-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.page-head-action-buttons {
+	display: flex;
+	gap: 20px;
+}
+
+.btn {
+	padding: 10px;
+	border: 2px solid transparent;
+	border-radius: 8px;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.btn:hover {
+	background-color: transparent;
+	border: 2px solid black;
+}
+
+.back-btn {
+	background-color: rgb(173, 172, 172);
+}
+
+.add-btn {
+	background-color: green;
+}
+
+.edit-btn {
+	background-color: rgb(255, 196, 0);
+}
+
+.del-btn {
+	background-color: rgb(209, 4, 4);
+}
+
+.page-list {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 10px;
+}
+
+.page-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	border-bottom: 1px solid;
+}
+
+.page-row-details-container {
+	display: flex;
+	gap: 10px;
+}
+
+.page-row-action-buttons {
+	display: flex;
+	gap: 10px;
+}
