@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import VehicleForm from "../components/VehicleForm";
 
-function VehiclesPage({ goHome }) {
+function VehiclesPage() {
+	const navigate = useNavigate();
+
 	const [vehicles, setVehicles] = useState([]);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +40,9 @@ function VehiclesPage({ goHome }) {
 		if (selectedVehicle) {
 			fetch(`http://localhost:5000/vehicles/${selectedVehicle.id}`, {
 				method: "PUT",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -45,7 +51,9 @@ function VehiclesPage({ goHome }) {
 		} else {
 			fetch("http://localhost:5000/vehicles", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -67,9 +75,10 @@ function VehiclesPage({ goHome }) {
 					<h2 className="page-title">Pojazdy</h2>
 
 					<div className="page-head-action-buttons">
-						<button className="back-btn btn" onClick={goHome}>
+						<button className="back-btn btn" onClick={() => navigate("/")}>
 							←
 						</button>
+
 						<button className="add-btn btn" onClick={openAddModal}>
 							+ Dodaj pojazd
 						</button>
@@ -90,13 +99,14 @@ function VehiclesPage({ goHome }) {
 									className="edit-btn btn"
 									onClick={() => openEditModal(v)}
 								>
-									✎
+									Edytuj
 								</button>
+
 								<button
 									className="del-btn btn"
 									onClick={() => deleteVehicle(v.id)}
 								>
-									🗑️
+									Usuń
 								</button>
 							</div>
 						</div>
@@ -104,8 +114,8 @@ function VehiclesPage({ goHome }) {
 				</div>
 
 				{isModalOpen && (
-					<div className="">
-						<div className="">
+					<div>
+						<div>
 							<VehicleForm
 								mode={selectedVehicle ? "edit" : "create"}
 								driver={selectedVehicle}

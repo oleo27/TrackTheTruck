@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import TripForm from "../components/TripForm";
 
-function TripsPage({ goHome }) {
+function TripsPage() {
+	const navigate = useNavigate();
+
 	const [trips, setTrips] = useState([]);
 	const [drivers, setDrivers] = useState([]);
 	const [vehicles, setVehicles] = useState([]);
@@ -52,7 +56,9 @@ function TripsPage({ goHome }) {
 		if (selectedTrip) {
 			fetch(`http://localhost:5000/trips/${selectedTrip.id}`, {
 				method: "PUT",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -61,7 +67,9 @@ function TripsPage({ goHome }) {
 		} else {
 			fetch("http://localhost:5000/trips", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -80,12 +88,15 @@ function TripsPage({ goHome }) {
 		<div>
 			<h2>Trasy</h2>
 
-			<button onClick={goHome}>Powrót</button>
+			<button onClick={() => navigate("/")}>Powrót</button>
+
 			<button onClick={openAddModal}>Dodaj trasę</button>
 
 			{trips.map((t) => (
 				<div key={t.id}>
-					<strong>{t.start_location}</strong> → {t.finish_location}
+					<strong>{t.start_location}</strong>
+					{" → "}
+					{t.finish_location}
 					{" | "}
 					status: {t.status}
 					<button onClick={() => openEditModal(t)}>Edytuj</button>

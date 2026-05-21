@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import DriverForm from "../components/DriverForm";
 
-function DriversPage({ goHome }) {
+function DriversPage() {
+	const navigate = useNavigate();
+
 	const [drivers, setDrivers] = useState([]);
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +40,9 @@ function DriversPage({ goHome }) {
 		if (selectedDriver) {
 			fetch(`http://localhost:5000/drivers/${selectedDriver.id}`, {
 				method: "PUT",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -45,7 +51,9 @@ function DriversPage({ goHome }) {
 		} else {
 			fetch("http://localhost:5000/drivers", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -67,9 +75,10 @@ function DriversPage({ goHome }) {
 					<h2 className="page-title">Kierowcy</h2>
 
 					<div className="page-head-action-buttons">
-						<button className="back-btn btn" onClick={goHome}>
+						<button className="back-btn btn" onClick={() => navigate("/")}>
 							← Powrót
 						</button>
+
 						<button className="add-btn btn" onClick={openAddModal}>
 							+ Dodaj kierowcę
 						</button>
@@ -90,13 +99,14 @@ function DriversPage({ goHome }) {
 									className="edit-btn btn"
 									onClick={() => openEditModal(d)}
 								>
-									✎
+									Edytuj
 								</button>
+
 								<button
 									className="del-btn btn"
 									onClick={() => deleteDriver(d.id)}
 								>
-									🗑️
+									Usuń
 								</button>
 							</div>
 						</div>
@@ -104,8 +114,8 @@ function DriversPage({ goHome }) {
 				</div>
 
 				{isModalOpen && (
-					<div className="">
-						<div className="">
+					<div>
+						<div>
 							<DriverForm
 								mode={selectedDriver ? "edit" : "create"}
 								driver={selectedDriver}
