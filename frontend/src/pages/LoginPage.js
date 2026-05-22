@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+	const navigate = useNavigate();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -40,7 +42,7 @@ function LoginPage() {
 
 				localStorage.setItem("username", data.username);
 
-				alert("Zalogowano");
+				navigate("/");
 			})
 			.catch((err) => {
 				setError(err.message);

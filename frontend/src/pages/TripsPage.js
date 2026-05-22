@@ -84,9 +84,18 @@ function TripsPage() {
 		}).then(loadTrips);
 	};
 
+	const logout = () => {
+		localStorage.clear();
+
+		navigate("/login");
+	};
+
 	return (
 		<div>
 			<h2>Trasy</h2>
+			<button className="btn-logout" onClick={logout}>
+				Logout
+			</button>
 
 			<button onClick={() => navigate("/")}>Powrót</button>
 
