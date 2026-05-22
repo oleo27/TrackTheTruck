@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
+	const navigate = useNavigate();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,8 +45,7 @@ function RegisterPage() {
 				if (!res.ok) {
 					throw new Error(data.message);
 				}
-
-				alert("Konto utworzone");
+				navigate("/login");
 
 				setUsername("");
 				setPassword("");

@@ -68,9 +68,18 @@ function DriversPage() {
 		}).then(loadDrivers);
 	};
 
+	const logout = () => {
+		localStorage.clear();
+
+		navigate("/login");
+	};
+
 	return (
 		<div className="wrapper">
 			<div className="container">
+				<button className="btn-logout" onClick={logout}>
+					Logout
+				</button>
 				<div className="page-head-row">
 					<h2 className="page-title">Kierowcy</h2>
 
