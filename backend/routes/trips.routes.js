@@ -2,25 +2,27 @@ const express = require("express");
 const router = express.Router();
 
 const pool = require("../db");
+const { verifyToken, requireAdmin } = require("../middleware/auth.middleware");
 
-// GET
-router.get("/", async (req, res) => {
+// GET - tylko zalogowani userzy
+router.get("/", verifyToken, async (req, res) => {
 	const result = await pool.query(`
-	  SELECT 
-      trips.*,
-      drivers.first_name,
-      drivers.last_name,
-      vehicles.registration_number,
-      vehicles.brand
-      FROM trips
-      LEFT JOIN drivers ON trips.driver_id = drivers.id
-      LEFT JOIN vehicles ON trips.vehicle_id = vehicles.id
+		SELECT 
+			trips.*,
+			drivers.first_name,
+			drivers.last_name,
+			vehicles.registration_number,
+			vehicles.brand
+		FROM trips
+		LEFT JOIN drivers ON trips.driver_id = drivers.id
+		LEFT JOIN vehicles ON trips.vehicle_id = vehicles.id
 	`);
+
 	res.json(result.rows);
 });
 
-// POST
-router.post("/", async (req, res) => {
+// POST - tylko admin
+router.post("/", verifyToken, requireAdmin, async (req, res) => {
 	const {
 		start_location,
 		finish_location,
@@ -41,8 +43,8 @@ router.post("/", async (req, res) => {
 	res.json(result.rows[0]);
 });
 
-// PUT
-router.put("/:id", async (req, res) => {
+// PUT - tylko admin
+router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 	const { id } = req.params;
 	const {
 		start_location,
@@ -72,8 +74,8 @@ router.put("/:id", async (req, res) => {
 	res.json(result.rows[0]);
 });
 
-// DELETE
-router.delete("/:id", async (req, res) => {
+// DELETE - tylko admin
+router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
 	const { id } = req.params;
 
 	const result = await pool.query("DELETE FROM trips WHERE id=$1 RETURNING *", [
