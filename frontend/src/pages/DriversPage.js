@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DriverForm from "../components/DriverForm";
+import useAuth from "../hooks/useAuth";
 
 function DriversPage() {
 	const navigate = useNavigate();
+	const { isAdmin, authHeaders } = useAuth();
 
 	const [drivers, setDrivers] = useState([]);
 
@@ -12,9 +14,11 @@ function DriversPage() {
 	const [selectedDriver, setSelectedDriver] = useState(null);
 
 	const loadDrivers = () => {
-		fetch("http://localhost:5000/drivers")
+		fetch("http://localhost:5000/drivers", { headers: authHeaders })
 			.then((res) => res.json())
-			.then(setDrivers);
+			.then((data) => {
+				if (Array.isArray(data)) setDrivers(data);
+			});
 	};
 
 	useEffect(() => {
@@ -40,9 +44,7 @@ function DriversPage() {
 		if (selectedDriver) {
 			fetch(`http://localhost:5000/drivers/${selectedDriver.id}`, {
 				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers: authHeaders,
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -51,9 +53,7 @@ function DriversPage() {
 		} else {
 			fetch("http://localhost:5000/drivers", {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers: authHeaders,
 				body: JSON.stringify(data),
 			}).then(() => {
 				closeModal();
@@ -65,6 +65,7 @@ function DriversPage() {
 	const deleteDriver = (id) => {
 		fetch(`http://localhost:5000/drivers/${id}`, {
 			method: "DELETE",
+			headers: authHeaders,
 		}).then(loadDrivers);
 	};
 
@@ -88,9 +89,11 @@ function DriversPage() {
 							← Powrót
 						</button>
 
-						<button className="add-btn btn" onClick={openAddModal}>
-							+ Dodaj kierowcę
-						</button>
+						{isAdmin && (
+							<button className="add-btn btn" onClick={openAddModal}>
+								+ Dodaj kierowcę
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -103,26 +106,28 @@ function DriversPage() {
 								</p>
 							</div>
 
-							<div className="page-row-action-buttons">
-								<button
-									className="edit-btn btn"
-									onClick={() => openEditModal(d)}
-								>
-									Edytuj
-								</button>
+							{isAdmin && (
+								<div className="page-row-action-buttons">
+									<button
+										className="edit-btn btn"
+										onClick={() => openEditModal(d)}
+									>
+										Edytuj
+									</button>
 
-								<button
-									className="del-btn btn"
-									onClick={() => deleteDriver(d.id)}
-								>
-									Usuń
-								</button>
-							</div>
+									<button
+										className="del-btn btn"
+										onClick={() => deleteDriver(d.id)}
+									>
+										Usuń
+									</button>
+								</div>
+							)}
 						</div>
 					))}
 				</div>
 
-				{isModalOpen && (
+				{isAdmin && isModalOpen && (
 					<div>
 						<div>
 							<DriverForm
