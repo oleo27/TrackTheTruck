@@ -1,29 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
 	const navigate = useNavigate();
+
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 
 	const [error, setError] = useState("");
+	const [errors, setErrors] = useState({});
+	const [touched, setTouched] = useState({});
+
+	useEffect(() => {
+		const e = {};
+
+		if (touched.username && !username) {
+			e.username = "Pole wymagane";
+		} else if (username && (username.length < 3 || username.length > 50)) {
+			e.username = "Login musi mieć od 3 do 50 znaków";
+		}
+
+		if (touched.password && !password) {
+			e.password = "Pole wymagane";
+		} else if (password && (password.length < 6 || password.length > 128)) {
+			e.password = "Hasło musi mieć od 6 do 128 znaków";
+		}
+
+		if (touched.confirmPassword && !confirmPassword) {
+			e.confirmPassword = "Pole wymagane";
+		} else if (confirmPassword && password && confirmPassword !== password) {
+			e.confirmPassword = "Hasła nie są takie same";
+		}
+
+		setErrors(e);
+	}, [username, password, confirmPassword, touched]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		if (!username || !password || !confirmPassword) {
-			setError("Wszystkie pola są wymagane");
-			return;
-		}
+		setTouched({
+			username: true,
+			password: true,
+			confirmPassword: true,
+		});
 
-		if (password.length < 6) {
-			setError("Hasło musi mieć minimum 6 znaków");
-			return;
-		}
-
-		if (password !== confirmPassword) {
-			setError("Hasła nie są takie same");
+		if (Object.keys(errors).length > 0) {
+			setError("Formularz zawiera błędy");
 			return;
 		}
 
@@ -45,6 +68,7 @@ function RegisterPage() {
 				if (!res.ok) {
 					throw new Error(data.message);
 				}
+
 				navigate("/login");
 
 				setUsername("");
@@ -62,29 +86,75 @@ function RegisterPage() {
 				<h1 className="auth-title">Rejestracja</h1>
 
 				<form className="auth-form" onSubmit={handleSubmit}>
-					<input
-						className="auth-input"
-						type="text"
-						placeholder="Login"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-					/>
+					<div>
+						<input
+							className={`auth-input ${
+								errors.username ? "invalid" : touched.username ? "valid" : ""
+							}`}
+							type="text"
+							placeholder="Login"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							onBlur={() =>
+								setTouched((t) => ({
+									...t,
+									username: true,
+								}))
+							}
+						/>
 
-					<input
-						className="auth-input"
-						type="password"
-						placeholder="Hasło"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
+						{errors.username && (
+							<div className="input-error">{errors.username}</div>
+						)}
+					</div>
 
-					<input
-						className="auth-input"
-						type="password"
-						placeholder="Powtórz hasło"
-						value={confirmPassword}
-						onChange={(e) => setConfirmPassword(e.target.value)}
-					/>
+					<div>
+						<input
+							className={`auth-input ${
+								errors.password ? "invalid" : touched.password ? "valid" : ""
+							}`}
+							type="password"
+							placeholder="Hasło"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							onBlur={() =>
+								setTouched((t) => ({
+									...t,
+									password: true,
+								}))
+							}
+						/>
+
+						{errors.password && (
+							<div className="input-error">{errors.password}</div>
+						)}
+					</div>
+
+					<div>
+						<input
+							className={`auth-input ${
+								errors.confirmPassword
+									? "invalid"
+									: touched.confirmPassword
+										? "valid"
+										: ""
+							}`}
+							type="password"
+							placeholder="Powtórz hasło"
+							value={confirmPassword}
+							onChange={(e) => setConfirmPassword(e.target.value)}
+							onBlur={() =>
+								setTouched((t) => ({
+									...t,
+									confirmPassword: true,
+								}))
+							}
+						/>
+
+						{errors.confirmPassword && (
+							<div className="input-error">{errors.confirmPassword}</div>
+						)}
+					</div>
 
 					{error && <p className="auth-error">{error}</p>}
 

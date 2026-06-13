@@ -7,12 +7,18 @@
 .background {
 	width: 100vw;
 	height: 100vh;
-	background-image: url("../public/bg.jpg");
+	background-image:
+		linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+		url("../public/bg.jpg");
 	background-position: center;
 	background-size: cover;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.auth-title {
+	color: white !important;
 }
 
 .home {
@@ -137,4 +143,33 @@
 .page-row-action-buttons {
 	display: flex;
 	gap: 10px;
+}
+
+/* Validation styles */
+.valid {
+	border: 2px solid #2ecc71;
+}
+.invalid {
+	border: 2px solid #e74c3c;
+}
+.input-error {
+	color: #e74c3c;
+	font-size: 0.9rem;
+	margin-top: 6px;
+}
+
+/* Auth specific */
+.auth-input {
+	padding: 10px;
+	margin-bottom: 10px;
+	width: 100%;
+	border-radius: 6px;
+	border: 1px solid #ccc;
+}
+.auth-error {
+	color: #e74c3c;
+	margin-bottom: 10px;
+}
+.auth-btn {
+	padding: 10px 20px;
 }
