@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const pool = require("../db");
-const { verifyToken, requireAdmin } = require("../middleware/auth.middleware");
+const { validateDriver } = require("../middleware/validators");
 
-// GET - tylko zalogowani
-router.get("/", verifyToken, async (req, res) => {
+// GET
+router.get("/", async (req, res) => {
 	const result = await pool.query("SELECT * FROM drivers");
 	res.json(result.rows);
 });
 
-// POST - tylko admin
-router.post("/", verifyToken, requireAdmin, async (req, res) => {
+// POST
+router.post("/", validateDriver, async (req, res) => {
 	const { first_name, last_name } = req.body;
 
 	const result = await pool.query(
@@ -21,8 +21,8 @@ router.post("/", verifyToken, requireAdmin, async (req, res) => {
 	res.json(result.rows[0]);
 });
 
-// PUT - tylko admin
-router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
+// PUT
+router.put("/:id", validateDriver, async (req, res) => {
 	const { id } = req.params;
 	const { first_name, last_name } = req.body;
 
@@ -34,8 +34,8 @@ router.put("/:id", verifyToken, requireAdmin, async (req, res) => {
 	res.json(result.rows[0]);
 });
 
-// DELETE - tylko admin
-router.delete("/:id", verifyToken, requireAdmin, async (req, res) => {
+// DELETE
+router.delete("/:id", async (req, res) => {
 	const { id } = req.params;
 	const result = await pool.query(
 		"DELETE FROM drivers WHERE id=$1 RETURNING *",

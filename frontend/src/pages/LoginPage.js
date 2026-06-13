@@ -1,19 +1,44 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage() {
 	const navigate = useNavigate();
+
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
 	const [error, setError] = useState("");
+	const [errors, setErrors] = useState({});
+	const [touched, setTouched] = useState({});
+
+	useEffect(() => {
+		const e = {};
+
+		if (touched.username && !username) {
+			e.username = "Pole wymagane";
+		} else if (username && (username.length < 3 || username.length > 30)) {
+			e.username = "Login musi mieć od 3 do 30 znaków";
+		}
+
+		if (touched.password && !password) {
+			e.password = "Pole wymagane";
+		} else if (password && (password.length < 6 || password.length > 128)) {
+			e.password = "Hasło musi mieć od 6 do 128 znaków";
+		}
+
+		setErrors(e);
+	}, [username, password, touched]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		if (!username || !password) {
-			setError("Wszystkie pola są wymagane");
+		setTouched({
+			username: true,
+			password: true,
+		});
+
+		if (Object.keys(errors).length > 0) {
+			setError("Formularz zawiera błędy");
 			return;
 		}
 
@@ -37,9 +62,7 @@ function LoginPage() {
 				}
 
 				localStorage.setItem("token", data.token);
-
 				localStorage.setItem("role", data.role);
-
 				localStorage.setItem("username", data.username);
 
 				navigate("/");
@@ -55,21 +78,49 @@ function LoginPage() {
 				<h1 className="auth-title">Logowanie</h1>
 
 				<form className="auth-form" onSubmit={handleSubmit}>
-					<input
-						className="auth-input"
-						type="text"
-						placeholder="Login"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-					/>
+					<div>
+						<input
+							className={`auth-input ${
+								errors.username ? "invalid" : touched.username ? "valid" : ""
+							}`}
+							type="text"
+							placeholder="Login"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							onBlur={() =>
+								setTouched((t) => ({
+									...t,
+									username: true,
+								}))
+							}
+						/>
 
-					<input
-						className="auth-input"
-						type="password"
-						placeholder="Hasło"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
+						{errors.username && (
+							<div className="input-error">{errors.username}</div>
+						)}
+					</div>
+
+					<div>
+						<input
+							className={`auth-input ${
+								errors.password ? "invalid" : touched.password ? "valid" : ""
+							}`}
+							type="password"
+							placeholder="Hasło"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							onBlur={() =>
+								setTouched((t) => ({
+									...t,
+									password: true,
+								}))
+							}
+						/>
+
+						{errors.password && (
+							<div className="input-error">{errors.password}</div>
+						)}
+					</div>
 
 					{error && <p className="auth-error">{error}</p>}
 
